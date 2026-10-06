@@ -136,7 +136,7 @@ function addLink(container, label, value) {
   const a = document.createElement('a'); a.href = url.href; a.textContent = label; a.target = '_blank'; a.rel = 'noopener noreferrer'; container.append(a);
 }
 function render() {
-  main.innerHTML = `<div class="intro" id="home"><h1>Your rally weekend</h1><p>9–10 October 2026 · Saaremaa</p></div><div class="live-panel"><span>Estonia now <strong id="clock"></strong></span><span id="next-event"></span></div><p class="legend"><span><i></i> Your plan</span><span class="muted">Other rally events · for information</span></p><div class="schedule">${Object.entries(days).map(([key, day]) => `<section id="${key}" class="day" aria-labelledby="${key}-title"><h2 id="${key}-title">${day.label}, ${day.displayDate} 2026</h2><ol class="events">${eventDays[key].map(e => `<li id="${e.id}" class="event ${e.planned ? 'planned' : 'informational'}"><time datetime="${new Date(e.at).toISOString()}">${clock.format(e.at)}</time><div class="event-content"><span class="event-label">${e.stage ? `SS${e.stage.id} Start · ` : ''}${e.label}</span>${e.planned ? '<span class="sr-only"> — Your plan</span>' : ''}<div class="event-links"></div></div><span class="event-detail">${e.detail || ''}</span></li>`).join('')}</ol></section>`).join('')}</div>`;
+  main.innerHTML = `<div class="intro" id="home"><h1>Your rally weekend</h1><p>9–10 October 2026 · Saaremaa</p></div><div class="live-panel"><div class="next-up"><span class="next-up-label">Next up:</span><span id="next-event"></span></div></div><p class="legend"><span><i></i> Your plan</span><span class="muted">Other rally events · for information</span></p><div class="schedule">${Object.entries(days).map(([key, day]) => `<section id="${key}" class="day" aria-labelledby="${key}-title"><h2 id="${key}-title">${day.label}, ${day.displayDate} 2026</h2><ol class="events">${eventDays[key].map(e => `<li id="${e.id}" class="event ${e.planned ? 'planned' : 'informational'}"><time datetime="${new Date(e.at).toISOString()}">${clock.format(e.at)}</time><div class="event-content"><span class="event-label">${e.stage ? `SS${e.stage.id} Start · ` : ''}${e.label}</span>${e.planned ? '<span class="sr-only"> — Your plan</span>' : ''}<div class="event-links"></div></div><span class="event-detail">${e.detail || ''}</span></li>`).join('')}</ol></section>`).join('')}</div>`;
   for (const e of allEvents) {
     const links = document.querySelector(`#${e.id} .event-links`);
     if (e.url) addLink(links, `${e.linkLabel} · Maps ↗`, e.url);
@@ -155,11 +155,9 @@ function selectedDay() {
   return Object.hasOwn(days, location.hash.slice(1)) ? location.hash.slice(1) : 'friday';
 }
 function updateTime(now = new Date()) {
-  document.querySelector('#clock').textContent = clock.format(now);
   const next = eventDays[selectedDay()].find(e => e.planned && e.at > now.getTime());
   const status = document.querySelector('#next-event');
-  status.textContent = next ? `Next: ${clock.format(next.at)} · ${next.label}` : 'All planned checkpoints have passed';
-  if (next && dateFormatter.format(next.at) !== dateFormatter.format(now)) status.textContent = `${dateFormatter.format(next.at)} · ${status.textContent}`;
+  status.textContent = next ? `${dateFormatter.format(next.at)} · ${clock.format(next.at)} · ${next.stage ? `SS${next.stage.id} Start · ` : ''}${next.label}` : 'All planned checkpoints have passed';
   for (const e of allEvents) {
     const row = document.getElementById(e.id);
     const active = e === next && dateFormatter.format(e.at) === dateFormatter.format(now);
