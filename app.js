@@ -57,7 +57,20 @@ const days = {
       ],
     },
     { id: 8, time: '15:40', name: 'Kaugatoma 2', distance: '10.65' },
-    { id: 9, time: '16:36', name: 'Karujärve', distance: '17.10' },
+    {
+      id: 9, time: '16:36', name: 'Karujärve', distance: '17.10',
+      showStageLinks: false,
+      parking: 'https://www.google.com/maps/search/?api=1&query=58.3908056,22.2112222',
+      parkingWaze: 'https://www.waze.com/ul?ll=58.3908056,22.2112222&z=17',
+      spectating: 'https://www.google.com/maps/search/?api=1&query=58.3998611,22.2190556',
+      spectatingWaze: 'https://www.waze.com/ul?ll=58.3998611,22.2190556&z=17',
+      earlyArrivalMinutes: 30, // Assumed to match SS7; adjust if needed.
+      journey: [
+        { label: 'Latest departure from SS7 spectating point · Walk to parking', minutes: 5, activity: 'walk' },
+        { label: 'Arrive at SS7 parking · Drive to SS9 parking', minutes: 35, activity: 'drive', destination: 'parking' },
+        { label: 'Arrive at SS9 parking spot, start walking', minutes: 25, activity: 'walk', destination: 'spectating' },
+      ],
+    },
   ] },
 };
 const plannedStages = new Set([1, 3, 4, 7, 9]);
@@ -69,6 +82,7 @@ const additionalEvents = {
   ],
   saturday: [
     { time: '07:05', label: 'Service B · Kuressaare', code: '—', detail: '30 min' },
+    { time: '08:00', label: 'Workday starts, first beer', planned: true },
     { time: '10:18', label: 'Service C · Kuressaare', code: '—', detail: '50 min' },
     { time: '14:07', label: 'Service D · Kuressaare', code: '—', detail: '40 min' },
   ],
@@ -78,7 +92,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Talli
 const timestamp = (day, time) => Date.parse(`${day.date}T${time}:00+03:00`);
 function buildEvents(key) {
   const day = days[key];
-  const events = additionalEvents[key].map((e, i) => ({ ...e, id: `${key}-info-${i}`, at: timestamp(day, e.time), planned: false }));
+  const events = additionalEvents[key].map((e, i) => ({ ...e, id: `${key}-info-${i}`, at: timestamp(day, e.time), planned: e.planned ?? false }));
   for (const stage of day.stages) {
     const planned = plannedStages.has(stage.id);
     events.push({ id: `stage-${stage.id}`, at: timestamp(day, stage.time), code: `SS${stage.id} Start`, label: stage.name, detail: `${stage.distance} km`, planned, stage });
