@@ -19,10 +19,43 @@ const days = {
     { id: 3, time: '20:25', name: 'Kuressaare linn', distance: '1.61', note: 'City stage' },
   ] },
   saturday: { label: 'Saturday', date: '2026-10-10', displayDate: '10 October', description: 'A full day on the island.', stages: [
-    { id: 4, time: '08:30', name: 'Karala', distance: '11.99' },
+    {
+      id: 4, time: '08:30', name: 'Karala', distance: '11.99', showStageLinks: false,
+      leaveAt: '2026-10-10T06:30:00+03:00',
+      departureLabel: 'Latest departure · Metsaääre, Kuusiku',
+      showDepartureLinks: false,
+      travel: { drivingMinutes: 65, walkingMinutes: 20, earlyArrivalMinutes: 35 },
+      stop: {
+        drivingMinutes: 30,
+        label: 'Arrive at Aia 54, Kuressaare · Leave for SS4 parking',
+        maps: 'https://www.google.com/maps/search/?api=1&query=Aia+54%2C+Kuressaare',
+        waze: 'https://www.waze.com/ul?q=Aia%2054%2C%20Kuressaare',
+      },
+      parking: 'https://www.google.com/maps/search/?api=1&query=58.2964444,21.9491389',
+      parkingWaze: 'https://www.waze.com/ul?ll=58.2964444,21.9491389&z=17',
+      spectating: 'https://www.google.com/maps/search/?api=1&query=58.2907778,21.9676389',
+      spectatingWaze: 'https://www.waze.com/ul?ll=58.2907778,21.9676389&z=17',
+    },
     { id: 5, time: '09:18', name: 'Undva 1', distance: '22.75' },
     { id: 6, time: '12:06', name: 'Kaugatoma 1', distance: '10.65' },
-    { id: 7, time: '13:07', name: 'Undva 2', distance: '22.75' },
+    {
+      id: 7, time: '13:07', name: 'Undva 2', distance: '22.75',
+      showStageLinks: false,
+      parking: 'https://www.google.com/maps/search/?api=1&query=58.4424722,21.9585556',
+      parkingWaze: 'https://www.waze.com/ul?ll=58.4424722,21.9585556&z=17',
+      spectating: 'https://www.google.com/maps/search/?api=1&query=58.4442778,21.9553889',
+      spectatingWaze: 'https://www.waze.com/ul?ll=58.4442778,21.9553889&z=17',
+      kihelkonna: 'https://www.google.com/maps/search/?api=1&query=58.3594722,22.0378333',
+      kihelkonnaWaze: 'https://www.waze.com/ul?ll=58.3594722,22.0378333&z=17',
+      earlyArrivalMinutes: 30,
+      journey: [
+        { label: 'Latest departure from SS4 spectating point · Walk to parking', minutes: 25, activity: 'walk' },
+        { label: 'Arrive at SS4 parking · Drive to Kihelkonna', minutes: 10, activity: 'drive', destination: 'kihelkonna' },
+        { label: 'Kihelkonna shopping and extrusion', minutes: 15, activity: 'stop' },
+        { label: 'Leave Kihelkonna · Drive to SS7 parking', minutes: 15, activity: 'drive', destination: 'parking' },
+        { label: 'Arrive at SS7 parking spot, start walking', minutes: 5, activity: 'walk', destination: 'spectating' },
+      ],
+    },
     { id: 8, time: '15:40', name: 'Kaugatoma 2', distance: '10.65' },
     { id: 9, time: '16:36', name: 'Karujärve', distance: '17.10' },
   ] },
@@ -49,9 +82,22 @@ function buildEvents(key) {
   for (const stage of day.stages) {
     const planned = plannedStages.has(stage.id);
     events.push({ id: `stage-${stage.id}`, at: timestamp(day, stage.time), code: `SS${stage.id} Start`, label: stage.name, detail: `${stage.distance} km`, planned, stage });
+    if (stage.journey) {
+      const arrival = timestamp(day, stage.time) - stage.earlyArrivalMinutes * 60000;
+      let at = arrival - stage.journey.reduce((total, leg) => total + leg.minutes, 0) * 60000;
+      stage.journey.forEach((leg, index) => {
+        events.push({ id: `journey-${stage.id}-${index}`, at, label: leg.label, detail: `${leg.minutes} min ${leg.activity}`, planned, url: leg.destination ? stage[leg.destination] : undefined, wazeUrl: leg.destination ? stage[`${leg.destination}Waze`] : undefined, linkLabel: { parking: 'Parking', spectating: 'Spectating', kihelkonna: 'Kihelkonna' }[leg.destination] });
+        at += leg.minutes * 60000;
+      });
+      events.push({ id: `arrive-${stage.id}`, at: arrival, label: `SS${stage.id} · Arrive at spectating area`, detail: `${stage.earlyArrivalMinutes} min early`, planned });
+      continue;
+    }
     if (!stage.leaveAt || !Number.isFinite(Date.parse(stage.leaveAt))) continue;
     const departure = Date.parse(stage.leaveAt);
-    events.push({ id: `leave-${stage.id}`, at: departure, code: 'GO', label: stage.departureLabel || `Leave for SS${stage.id}`, detail: stage.travel ? `${stage.travel.drivingMinutes} min drive` : '', planned, url: stage.parking, wazeUrl: stage.parkingWaze, linkLabel: 'Parking' });
+    events.push({ id: `leave-${stage.id}`, at: departure, code: 'GO', label: stage.departureLabel || `Leave for SS${stage.id}`, detail: stage.travel ? `${stage.stop?.drivingMinutes ?? stage.travel.drivingMinutes} min drive` : '', planned, url: stage.showDepartureLinks === false ? undefined : (stage.stop ? stage.stop.maps : stage.parking), wazeUrl: stage.showDepartureLinks === false ? undefined : (stage.stop ? stage.stop.waze : stage.parkingWaze), linkLabel: stage.stop ? 'Aia 54' : 'Parking' });
+    if (stage.stop && stage.travel) {
+      events.push({ id: `stop-${stage.id}`, at: departure + stage.stop.drivingMinutes * 60000, label: stage.stop.label, detail: `${stage.travel.drivingMinutes - stage.stop.drivingMinutes} min drive`, planned, url: stage.parking, wazeUrl: stage.parkingWaze, linkLabel: 'Parking' });
+    }
     if (stage.travel) {
       const parking = departure + stage.travel.drivingMinutes * 60000;
       events.push({ id: `parking-${stage.id}`, at: parking, code: 'P', label: 'Arrive at parking spot, start walking', detail: `${stage.travel.walkingMinutes} min walk`, planned, url: stage.spectating, wazeUrl: stage.spectatingWaze, linkLabel: 'Spectating' });
@@ -104,6 +150,7 @@ function updateTime(now = new Date()) {
     const row = document.getElementById(e.id);
     const active = e === next && dateFormatter.format(e.at) === dateFormatter.format(now);
     row.classList.toggle('next', active);
+    row.classList.toggle('reached', e.at <= now.getTime());
     if (active) row.setAttribute('aria-current', 'step'); else row.removeAttribute('aria-current');
   }
   document.querySelector('.now-marker')?.remove();
@@ -118,7 +165,7 @@ function navigate() {
   closeMenu();
   const key = selectedDay();
   for (const dayKey of Object.keys(days)) document.getElementById(dayKey).hidden = dayKey !== key;
-  document.querySelector('h1').textContent = `${days[key].label} · Rally plan`;
+  document.querySelector('h1').textContent = `${days[key].label} · Logistical Plan`;
   document.querySelector('.intro p').textContent = `${days[key].displayDate} 2026 · Saaremaa`;
   document.title = `${days[key].label} · Saaremaa Rally 2026`;
   for (const a of menu.querySelectorAll('a')) { if (a.hash === `#${key}`) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
@@ -127,5 +174,7 @@ function navigate() {
 }
 window.addEventListener('hashchange', navigate);
 setInterval(updateTime, 15000);
+window.addEventListener('focus', () => updateTime());
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateTime(); });
 render();
 navigate();

@@ -26,3 +26,7 @@ SS1: leave Kuressaare at 17:03, drive 32 minutes, park/start walking at 17:35, w
 The Estonia clock refreshes every 15 seconds. On a rally day, a NOW line appears between elapsed and upcoming checkpoints; the next planned checkpoint is highlighted. This is a chronological list, not a proportional time scale. Reminders only work while the page is open; elapsed checkpoints do not imply that stages have finished.
 
 Official schedule: https://saaremaarally.eu/en/for-spectators/ — checked 6 October 2026. All rally times are Estonia EEST (UTC+03:00).
+
+SS4: leave Metsaääre, Kuusiku at 06:30, reach Aia 54 in Kuressaare at 07:00 and immediately continue, park/start walking at 07:35, reach the spectating spot at 07:55 (35 minutes early), stage starts 08:30. No stop duration at Aia 54 is included. The optional `stop` object stores the first drive duration, checkpoint label and Maps/Waze links; `travel.drivingMinutes` includes both drives.
+
+SS7: leave SS4 spectating at 11:27, reach SS4 parking at 11:52, reach Kihelkonna at 12:02, stop for 15 minutes, leave at 12:17, reach SS7 parking at 12:32, and reach spectating at 12:37, 30 minutes before the 13:07 start. `journey` legs are calculated backwards from the stage start and `earlyArrivalMinutes`. SS7 parking and spectating Maps/Waze pins appear on the 12:17 and 12:32 checkpoints respectively. Journey legs select a stage pin using `destination: 'parking'` or `destination: 'spectating'`.
