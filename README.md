@@ -34,3 +34,7 @@ SS7: leave SS4 spectating at 11:27, reach SS4 parking at 11:52, reach Kihelkonna
 SS9: assuming a 30-minute early arrival (matching SS7), leave SS7 spectating at 15:01, reach SS7 parking at 15:06, drive 35 minutes to SS9 parking at 15:41, and walk 25 minutes to spectating at 16:06 before the 16:36 start. Maps/Waze pins appear at 15:06 for parking and 15:41 for spectating. Change SS9 `earlyArrivalMinutes` to adjust this assumed buffer.
 
 The header theme button switches between light and dark. It follows the device theme until you choose one, then remembers your choice in local storage. If storage is unavailable the toggle still works for the current visit. `theme.js` applies the theme before the stylesheet loads.
+
+## Prediction game
+
+Open the burger menu → Prediction game for Saaremaa Rally 2026 (nine stages). Edit [predictions](data/saaremaa/predictions.txt) and [manual fallback standings](data/saaremaa/results.txt). See [data instructions](data/README.md) for formats and live-first fallback behavior. Scoring uses overall standings after each stage, not individual stage times.

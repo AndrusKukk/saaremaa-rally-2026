@@ -175,6 +175,19 @@ function updateTime(now = new Date()) {
 }
 function navigate() {
   closeMenu();
+  const game = location.hash === '#prediction';
+  main.hidden = game;
+  document.querySelector('#prediction-game').hidden = !game;
+  if (game) {
+    document.title = 'Prediction game · Saaremaa Rally 2026';
+    for (const a of menu.querySelectorAll('a')) {
+      if (a.hash === '#prediction') a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+    window.PredictionGame.show();
+    window.scrollTo(0, 0);
+    return;
+  }
   const key = selectedDay();
   for (const dayKey of Object.keys(days)) document.getElementById(dayKey).hidden = dayKey !== key;
   document.querySelector('h1').textContent = `${days[key].label} · Logistical Plan`;

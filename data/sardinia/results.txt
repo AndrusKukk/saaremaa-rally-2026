@@ -1,0 +1,10 @@
+# Overall standings AFTER each stage, first to fifth. Live results take priority.
+SS1: Solberg, Ogier, Evans, Pajari, Neuville
+SS2: Ogier, Fourmaux, Pajari, Evans, Neuville
+SS3: Fourmaux, Neuville, Pajari, Solberg, Evans
+SS4: Fourmaux, Neuville, Solberg, Pajari, Ogier
+SS5: Fourmaux, Neuville, Solberg, Pajari, Ogier
+SS6: Fourmaux, Neuville, Solberg, Pajari, Ogier
+SS7: Neuville, Fourmaux, Solberg, Ogier, Pajari
+SS8: Neuville, Solberg, Ogier, Pajari, Fourmaux
+SS9: Neuville, Solberg, Ogier, Fourmaux, Pajari

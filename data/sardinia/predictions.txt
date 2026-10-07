@@ -1,0 +1,5 @@
+# One ordered top-five prediction per player, used for every stage.
+Andrus: Solberg, Evans, Pajari, Ogier, Neuville
+Kaido: Solberg, Neuville, Fourmaux, Evans, Katsuta
+Markus: Solberg, Sesks, Katsuta, Ogier, Lappi
+Karel: Ogier, Evans, Solberg, Neuville, Sesks

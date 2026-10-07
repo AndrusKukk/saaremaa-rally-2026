@@ -1,0 +1,7 @@
+# Add five driver surnames in order after each colon. Blank means awaiting prediction.
+Andrus:
+Kaido:
+Mihkel:
+Markus:
+Kenno:
+Madis:

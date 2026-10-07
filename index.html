@@ -7,6 +7,8 @@
   <title>Saaremaa Rally 2026</title>
   <script src="theme.js"></script>
   <link rel="stylesheet" href="style.css">
+  <script src="game-core.js" defer></script>
+  <script src="game.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -17,9 +19,11 @@
     <nav id="day-menu" aria-label="Rally days" hidden>
       <a href="#friday"><span>Friday</span><small>09 OCT · 3 STAGES</small><span>↗</span></a>
       <a href="#saturday"><span>Saturday</span><small>10 OCT · 6 STAGES</small><span>↗</span></a>
+      <a href="#prediction"><span>Prediction game</span><small>SAAREMAA · 9 STAGES</small><span>↗</span></a>
     </nav>
   </header>
   <main id="main"></main>
+  <section id="prediction-game" aria-label="Prediction game" hidden></section>
   <footer><span>Made for a weekend by the stages.</span><a href="https://saaremaarally.eu/en/for-spectators/" target="_blank" rel="noopener noreferrer">Official rally timetable ↗</a><span>All times Estonia · EEST</span></footer>
 </body>
 </html>
