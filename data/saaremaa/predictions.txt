@@ -1,7 +1,7 @@
 # Add five driver surnames in order after each colon. Blank means awaiting prediction.
 Andrus:
-Kaido:
-Mihkel:
+Kaido: Enok, Nõgene, Volver, Kaur, Koik
+Mihkel: Volver, Nõgene, Enok, Kaur, Kasari
 Markus:
 Kenno:
 Madis:
