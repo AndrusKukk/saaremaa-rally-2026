@@ -2,5 +2,5 @@
 Andrus: Enok, Volver, Kaur, Nõgene, Koik 
 Kaido: Enok, Nõgene, Volver, Kaur, Koik
 Mihkel: Volver, Nõgene, Enok, Kaur, Kasari
-Markus: Enok, Kaur, Nõgene, Volver, Kio
+Markus: Enok, Kaur, Nõgene, Volver, Folkmanis
 Kenno: Volver, Enok, Nõgene, Kasari, Kaur
